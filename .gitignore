@@ -116,3 +116,12 @@ scripts/lh_image_install_octop_tencentos.sh
 .worktrees/
 # Local conda environment
 .conda-octop/
+
+# 陆吾AI 本地运行数据（勿提交）
+/.octop/
+/.octop-dev/
+/.workbuddy/
+/dashboard/.npm-cache/
+/luwu-mascot.miora
+/luwu-mascot_assets/
+/$null
