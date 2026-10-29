@@ -1,0 +1,6 @@
+# 陆吾AI 白标资产：与上游合并时始终保留本分支版本
+dashboard/public/octop-mascot-* merge=ours
+dashboard/public/logo_* merge=ours
+dashboard/public/favico.svg merge=ours
+dashboard/public/pwa-*.png merge=ours
+dashboard/public/apple-touch-icon.png merge=ours
