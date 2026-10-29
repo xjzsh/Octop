@@ -15,7 +15,6 @@ from octop.infra.users.resource_policy import (
     POLICY_WORKSPACE_ROOT_DIR,
     effective_workspace_root_dir,
 )
-from octop.infra.utils.host_dirs import host_fs_tree_root
 from octop.infra.utils.locale import normalize_locale
 
 logger = logging.getLogger(__name__)
@@ -27,10 +26,17 @@ SETUP_DEFAULT_AGENT_ID = "main"
 def default_home_local_backend(*, root_dir: str | None = None) -> dict[str, Any]:
     """Same local backend as the dashboard create-from-expert default.
 
-    Defaults to host filesystem root; pass *root_dir* when a user
+    Defaults to the host-root sentinel ``/`` — the exact value the dashboard
+    emits (``BackendBuilder`` default) and the form that stays meaningful on
+    Windows: ``windows_neutralize_host_root`` rewrites it to the agent
+    workspace at runtime, while ``dir.py`` treats it as host root when picking
+    the create-time workspace. Persisting ``host_fs_tree_root()`` here instead
+    would store a drive root (``C:/``), which the resolver deliberately treats
+    as a *user-chosen* jail and never rewrites — leaving harness unable to
+    wrap the agent workspace artifacts. Pass *root_dir* when a user
     ``workspace_root_dir`` policy applies.
     """
-    resolved = (root_dir or "").strip() or host_fs_tree_root()
+    resolved = (root_dir or "").strip() or "/"
     return {
         "type": "local_shell",
         "root_dir": resolved,

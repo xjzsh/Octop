@@ -15,7 +15,6 @@ from octop.infra.agents.experts.default_agent import (
     default_home_local_backend,
 )
 from octop.infra.errors import OctopError
-from octop.infra.utils.host_dirs import host_fs_tree_root
 
 
 @pytest.fixture(scope="module")
@@ -65,11 +64,11 @@ async def test_bootstrap_creates_general_assistant(catalog: ExpertCatalog) -> No
     assert spec.agent_id is None
     assert spec.template_name == DEFAULT_EXPERT_ID
     assert spec.config["backend"] == default_home_local_backend()
-    assert spec.config["backend"]["root_dir"] == host_fs_tree_root()
+    assert spec.config["backend"]["root_dir"] == "/"
     assert registry.create.await_args.kwargs["defer_bootstrap"] is True
 
 
-async def test_bootstrap_main_uses_fs_root_backend(catalog: ExpertCatalog) -> None:
+async def test_bootstrap_main_uses_host_root_sentinel_backend(catalog: ExpertCatalog) -> None:
     registry = MagicMock()
     registry.get_row.return_value = None
     registry.list_agents.return_value = []
@@ -84,7 +83,7 @@ async def test_bootstrap_main_uses_fs_root_backend(catalog: ExpertCatalog) -> No
 
     spec = registry.create.await_args.args[0]
     assert spec.config["backend"] == default_home_local_backend()
-    assert spec.config["backend"]["root_dir"] == host_fs_tree_root()
+    assert spec.config["backend"]["root_dir"] == "/"
 
 
 async def test_bootstrap_respects_policy_root_dir(catalog: ExpertCatalog, tmp_path: Path) -> None:
