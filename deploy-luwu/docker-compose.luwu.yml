@@ -1,0 +1,32 @@
+# 陆吾AI Compose 配置（配合 /opt/luwu/.env 使用）
+# 用法: docker compose -f docker-compose.luwu.yml --env-file /opt/luwu/.env up -d
+services:
+  luwu-ai:
+    image: luwu-ai:${LUWU_VERSION:-1.0.3b1}
+    container_name: luwu-ai
+    restart: unless-stopped
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+    ports:
+      - "${OCTOP_BIND:-0.0.0.0}:${OCTOP_PORT:-8088}:8088"
+    volumes:
+      - /opt/luwu/data:/data/.octop
+    environment:
+      - HOME=/data
+      - OCTOP_BIND_HOST=0.0.0.0
+      - OCTOP_PORT=8088
+      - OCTOP_LOG_LEVEL=info
+      - OCTOP_DEFAULT_PASSWORD=${OCTOP_DEFAULT_PASSWORD:-}
+      - OCTOP_ADMIN_USERNAME=${OCTOP_ADMIN_USERNAME:-admin}
+      - OCTOP_ADMIN_DISPLAY_NAME=${OCTOP_ADMIN_DISPLAY_NAME:-陆吾AI 管理员}
+      # 未来迁 PostgreSQL 时填这里:
+      # - OCTOP_DATABASE_DRIVER=postgresql
+      # - OCTOP_DATABASE_URL=postgresql://octop:octop@<host>:5432/octop
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request as u; u.urlopen('http://127.0.0.1:8088/api/health', timeout=5)\""]
+      interval: 30s
+      timeout: 8s
+      retries: 5
+      start_period: 60s
