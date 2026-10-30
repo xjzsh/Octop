@@ -1,4 +1,7 @@
 # 陆吾AI 白标资产：与上游合并时始终保留本分支版本
+# 注意：语言包（locales/*.json）不要加 merge=ours —— 上游会往里新增词条，
+#       整文件保护会丢掉上游新功能的文案。合并上游后运行 deploy-luwu/rebrand.sh
+#       重放品牌替换即可。
 dashboard/public/octop-mascot-* merge=ours
 dashboard/public/logo_* merge=ours
 dashboard/public/favico.svg merge=ours
